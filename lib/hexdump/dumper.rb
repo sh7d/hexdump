@@ -195,6 +195,8 @@ module Hexdump
               else
                 raise(ArgumentError,"unknown base #{options[:base].inspect}")
               end
+      raise ArgumentError, 'Bad startpos' unless [NilClass, Integer].include?(options[:startpos].class)
+      @position = options[:startpos] || 0
 
       @word_size = options.fetch(:word_size,1)
       @endian = case options[:endian]
@@ -220,7 +222,7 @@ module Hexdump
         end
       end
     end
-    
+
     #
     # Iterates over every word within the data.
     #
@@ -366,7 +368,7 @@ module Hexdump
       bytes_segment_width = ((@width * @format_width) + @width)
       line_format = "%.8x  %-#{bytes_segment_width}s |%s|\n"
 
-      index = 0
+      index = @position
       count = 0
 
       numeric   = ''
@@ -384,15 +386,16 @@ module Hexdump
           numeric   = ''
           printable = ''
 
-          index += (@width * @word_size)
+          index += @position + (@width * @word_size)
           count  = 0
         end
       end
 
       if count > 0
         # output the remaining line
-        output << sprintf(line_format,index,numeric,printable)
+        output << sprintf(line_format, index, numeric, printable)
       end
+      @position += data.size
     end
 
     protected

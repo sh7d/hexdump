@@ -1,3 +1,6 @@
+### 0.2.4 / 2012-05-28
+* Allow to specify start position in dumper constructor
+
 ### 0.2.3 / 2012-05-28
 
 * Fixed a typo in the gemspec, which incorrectly set
